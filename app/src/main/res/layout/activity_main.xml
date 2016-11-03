@@ -13,7 +13,7 @@
         android:background="@drawable/bg_snow_night"
         android:visibility="gone" />
 
-    <com.harmonywisdom.weather.animation.view.SceneSurfaceView
+    <com.kit.weather.animation.view.SceneSurfaceView
         android:id="@+id/sceneSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
