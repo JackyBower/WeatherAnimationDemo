@@ -20,31 +20,40 @@
 						android:layout_height="match_parent" />
 
 		</RelativeLayout>
-	
-* 通过配置文件来控制雪花降落速度、及位置
 
-		<?xml version="1.0" encoding="UTF-8"?>
-			<weatherscene>
-					<weather weather_bg="bg_snow_day" weather_blur="blur_bg_snow_day" weather_id="21">
-							<actor angle="15" common_layer="0" common_rotatePosX="0.156" common_rotatePosY="0.352"
-									common_scale="0.6" common_speed="70" common_type="snowFall" count="5" scaleX="2.0"
-									scaleY="3.0">
-									<name actor_name="snowflake_m" />
-							</actor>
-							<actor angle="15" common_layer="2" common_rotatePosX="0.156" common_rotatePosY="0.352"
-									common_scale="0.85" common_speed="160" common_type="snowFall" count="5" endX="1.0"
-									endY="1.0" scaleX="2.0" scaleY="3.0">
-									<name actor_name="snowflake_l" />
-							</actor>
-							<actor angle="15" common_layer="1" common_rotatePosX="0.156" common_rotatePosY="0.352"
-									common_scale="0.8" common_speed="380" common_type="snowFall" count="5" scaleX="2.0"
-									scaleY="3.0">
-									<name actor_name="snowflake_xl" />
-							</actor>
-							<actor angle="15" common_layer="0" common_rotatePosX="0.156" common_rotatePosY="0.352"
-									common_scale="0.85" common_speed="700" common_type="snowFall" count="5" scaleX="2.0"
-									scaleY="3.0">
-									<name actor_name="snowflake_xxl" />
-							</actor>
-					</weather>
-		</weatherscene>
+* 通过配置文件来控制雪花降落速度、位置
+ ``` java 
+ weather_scene_slight_snow_day.xml
+ ```
+ 
+* SnowFall.java
+   ``` java 
+   
+   protected SnowFall(Context context) {
+        super(context);
+        // 设置是否使用抗锯齿功能，会消耗较大资源，绘制图形速度会变慢
+        paint.setAntiAlias(false);
+        // 如果该项设置为true，则图像在动画进行中会滤掉对Bitmap图像的优化操作，加快显示速度，本设置项依赖于dither和xfermode的设置
+        paint.setFilterBitmap(true);
+        // 设定是否使用图像抖动处理，会使绘制出来的图片颜色更加平滑和饱满，图像更加清晰
+        paint.setDither(true);
+        try {
+            listXMLData = SaxService.getInstance().readXML(context, "weather_scene_slight_snow_day.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        getViewSize(context);
+        loadRainImage(context);
+        addRandomRain();
+    }
+   
+   private void snowDown(ActorInfo snow) {
+        // 雪花的落出屏幕后又让它从顶上下落
+        if (snow.getX() > screenWidth || snow.getY() > screenHeiht) {
+            snow.setY(0);
+            snow.setX(random.nextFloat() * screenWidth);
+        }
+        snow.setX(snow.getX() + snow.getOffset());// 下落飘的偏移量
+        snow.setY(snow.getY() + snow.getSpeed());// 下落的速度
+    }
+```
